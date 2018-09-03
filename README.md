@@ -2,10 +2,15 @@
 V2 Targeting and DAS system for Advanced Class SAE Aero Design competition. Python and OpenCV upgrade from previous Processing/Java program located [here](https://github.com/MarkSherstan/Aero_HLG_2018_DAS).
 
 ## To be completed...
-* Add GUI 
 * Interface with serial port
 * Receive information from flight controller
 * Send information to flight controller
+
+## Usage
+The following are case sensative:
+* r --> Toggle recording (will rewrite file if it is turned on off on) 
+* (space) --> Release payload.
+* q --> Exit program, must be used to ensure recording is properly saved.
 
 ## Requirments
 Built using: 
