@@ -1,12 +1,11 @@
 import cv2
 import random
 import math
-import dronekit_sitl
 import numpy as np
-from dronekit import connect, VehicleMode
+from dronekit import connect, VehicleMode, Command, LocationGlobal
 from pymavlink import mavutil
 
-# Text
+# Text formatting
 font                   = cv2.FONT_HERSHEY_SIMPLEX
 fontScale              = 0.6
 fontColor              = (0,255,0)
@@ -18,34 +17,37 @@ height = 720
 dropped = False
 record = False
 
-# Connect to flight controller
-sitl = dronekit_sitl.start_default()
-connection_string = sitl.connection_string()
-print("Connecting to vehicle on: %s" % (connection_string,))
-vehicle = connect(connection_string, wait_ready = True)
+# Connect to vehicle
+connectionString = "/dev/tty.usbserial-DN02WF3K"
+print "Connecting on: ",connectionString
+vehicle = connect(connectionString, wait_ready = ["groundspeed","attitude","location.global_relative_frame"], baud = 57600)
 
 # Camera properties, codec, and video recorder
 cap = cv2.VideoCapture(0)
 ret = cap.set(3,width)
 ret = cap.set(4,height)
-out = cv2.VideoWriter('flight_Out.avi',cv2.VideoWriter_fourcc('M','J','P','G'), 15, (width,height))
+out = cv2.VideoWriter("flight_Out.avi",cv2.VideoWriter_fourcc('M','J','P','G'), 15, (width,height))
 
-# Get telemetry data
+# Get telemetry data [ m/s, radians, radians, m ]
 def getFlightData():
-    groundSpeed = vehicle.groundspeed                            # m/s
-    roll = vehicle.attitude.roll                                 # radians
-    pitch = vehicle.attitude.pitch                               # radians
-    altitude = vehicle.location.global_relative_frame.alt        # m
+    groundSpeed = vehicle.groundspeed
+    roll = vehicle.attitude.roll
+    pitch = vehicle.attitude.pitch
+    altitude = vehicle.location.global_relative_frame.alt
+    if altitude < 0:    # Dont let the dropTime become imaginary
+        altitude = 0
+
     return (groundSpeed, roll, pitch, altitude)
 
 # Targetting calcs
 def targeting(groundSpeed, altitude, roll, pitch):
-    scale = 5   # One meter is equal to x pixels
+    scale = 5
 
-    dropTime = math.sqrt((2*altitude)/9.81)
-    distance = dropTime * groundSpeed
-    xCorrection = int((math.cos(roll)) * scale)
-    yCorrection = int((math.cos(pitch) + distance) * scale)
+    dropTime = math.sqrt((2.0*altitude)/9.81)
+    distance = int(dropTime * groundSpeed)
+    xCorrection = int((math.tan(roll)) * altitude * scale)                  # Positive y is up
+    yCorrection = int((distance - math.tan(pitch) * altitude) * scale)      # Positive x is right
+
     return (dropTime, distance, xCorrection, yCorrection, scale)
 
 # Drop Servo
@@ -59,6 +61,8 @@ def activateServo(PWM):
     0, 0, 0, 0, 0)                              # param 3-7 not used
 
     vehicle.send_mavlink(msg)
+
+print("Open video feed")
 
 # Main Loop
 while(True):
@@ -130,4 +134,3 @@ cv2.destroyAllWindows()
 
 # Close the vehicle and/or simulator
 vehicle.close()
-sitl.stop()
