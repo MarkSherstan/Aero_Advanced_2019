@@ -10,7 +10,7 @@ Change line 21 to your serial port / USB Port in a format similar to:
 * OSX - dev/cu.usbmodem1
 * Windows - com14
 
-You can look up the value in Arduino IDE --> Tools --> Port. Using a Mac my line 21 looks like: 
+You can look up the value in Arduino IDE --> Tools --> Port. Using a Mac my line 21 looks like:
 
 ```
 connectionString = "/dev/tty.usbserial-DN02WF3K"
@@ -28,7 +28,10 @@ Built using:
 * [Dronekit](http://python.dronekit.io) 2.9.1
 * [pySerial](https://pypi.org/project/pyserial/) 3.4
 
+## Help
+Before first connection connect with [QGroundControl](http://qgroundcontrol.com) to ensure communication and help limit time out delays. 
+
 ## Hardware
 * Pixhawk px4 Flight Controller
 * 915 MHz SiK Telemetry Radio
-* Servo to be connected to port 6? 
+* Servo to be connected to port 6?
