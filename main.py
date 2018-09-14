@@ -1,6 +1,7 @@
 import cv2
 import random
 import math
+import datetime
 import numpy as np
 from dronekit import connect, VehicleMode, Command, LocationGlobal
 from pymavlink import mavutil
@@ -22,11 +23,15 @@ connectionString = "/dev/tty.usbserial-DN02WF3K"
 print "Connecting on: ",connectionString
 vehicle = connect(connectionString, wait_ready = ["groundspeed","attitude","location.global_relative_frame"], baud = 57600)
 
-# Camera properties, codec, and video recorder
+# Camera properties, set time stamp, codec, and video recorder
 cap = cv2.VideoCapture(0)
 ret = cap.set(3,width)
 ret = cap.set(4,height)
-out = cv2.VideoWriter("flight_Out.avi",cv2.VideoWriter_fourcc('M','J','P','G'), 15, (width,height))
+
+now = datetime.datetime.now()
+timeStamp = now.strftime("%Y-%m-%d_%H.%M.%S") + ".avi"
+
+out = cv2.VideoWriter(timeStamp,cv2.VideoWriter_fourcc('M','J','P','G'), 15, (width,height))
 
 # Get telemetry data [ m/s, radians, radians, m ]
 def getFlightData():
@@ -56,7 +61,7 @@ def activateServo(PWM):
     0, 0,                                       # target_system, target_component
     mavutil.mavlink.MAV_CMD_DO_SET_SERVO,       # command
     0,                                          # confirmation
-    6,                                          # servo number
+    9,                                          # servo number
     PWM,                                        # servo position between 1000 and 2000
     0, 0, 0, 0, 0)                              # param 3-7 not used
 
