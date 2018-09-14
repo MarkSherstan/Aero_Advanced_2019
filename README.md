@@ -21,7 +21,9 @@ The following are case sensative:
 * (space) --> Release payload.
 * q --> Exit program, must be used to ensure recording is properly saved.
 
-## Requirments
+Crosshairs for targeting are purple unless altitude is greater than 100 ft (~30.5 ft) AGL (crosshairs then turn green).
+
+## Requirements
 Built using:
 * [Python](https://www.python.org) 2.7.15
 * [OpenCV](https://opencv.org) 3.4.2
@@ -29,7 +31,9 @@ Built using:
 * [pySerial](https://pypi.org/project/pyserial/) 3.4
 
 ## Help
-Before first connection connect with [QGroundControl](http://qgroundcontrol.com) to ensure communication and help limit time out delays. 
+Before first connection, connect with [QGroundControl](http://qgroundcontrol.com) to ensure communication and help limit time out delays.
+
+Ensure firmware is up to date on Telemetry Radios. Using QGroundControl go to, Vehicle set up --> Firmware --> and follow onscreen instructions.
 
 ## Hardware
 * Pixhawk px4 Flight Controller
