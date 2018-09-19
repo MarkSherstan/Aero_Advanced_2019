@@ -35,6 +35,9 @@ Before first connection, connect with [QGroundControl](http://qgroundcontrol.com
 
 Ensure firmware is up to date on Telemetry Radios. Using QGroundControl go to, Vehicle set up --> Firmware --> and follow onscreen instructions.
 
+## License
+The MIT License (MIT)
+
 ## Hardware
 * Pixhawk px4 Flight Controller
 * 915 MHz SiK Telemetry Radio
