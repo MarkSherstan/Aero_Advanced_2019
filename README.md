@@ -2,7 +2,8 @@
 V2 Targeting and DAS system for Advanced Class SAE Aero Design competition. Python and OpenCV upgrade from previous Java/Processing program located [here](https://github.com/MarkSherstan/Aero_HLG_2018_DAS).
 
 ## To be completed...
-* Activate servo (possible hardware / wiring connection issue)
+* Activate servo (possible hardware / wiring connection issue) --> Try ardupilot
+* Create executable 
 
 ## Usage
 Change line 21 to your serial port / USB Port in a format similar to:
@@ -41,4 +42,4 @@ The MIT License (MIT)
 ## Hardware
 * Pixhawk px4 Flight Controller
 * 915 MHz SiK Telemetry Radio
-* Servo to be connected to port 6?
+* Servo to be connected to port 9 (Aux 1)
