@@ -1,6 +1,8 @@
 # Aero_HLG_Targeting_II
 V2 Targeting and DAS system for Advanced Class SAE Aero Design competition. Python and OpenCV upgrade from previous Java/Processing program located [here](https://github.com/MarkSherstan/Aero_HLG_2018_DAS).
 
+Aero 2019 SAE rules have been posted and this program will no longer be updated due to the new competition requirements.
+
 ## Usage
 Change line 22 to your serial port / USB Port in a format similar to:
 * Linux - /dev/ttyUSB0
