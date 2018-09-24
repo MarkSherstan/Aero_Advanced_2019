@@ -131,3 +131,5 @@ cv2.destroyAllWindows()
 
 # Close the vehicle and/or simulator
 vehicle.close()
+
+print("Closing all")
