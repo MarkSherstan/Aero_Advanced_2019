@@ -19,7 +19,7 @@ dropped = False
 record = False
 
 # Connect to vehicle
-connectionString = "/dev/tty.usbserial-DN02WF3K"
+connectionString = "/dev/tty.usbserial-DN04K54A"
 print "Connecting on: ",connectionString
 vehicle = connect(connectionString, wait_ready = ["groundspeed","attitude","location.global_relative_frame"], baud = 57600)
 
@@ -55,18 +55,6 @@ def targeting(groundSpeed, altitude, roll, pitch):
 
     return (dropTime, distance, xCorrection, yCorrection, scale)
 
-# Drop Servo
-def activateServo(PWM):
-    msg = vehicle.message_factory.command_long_encode(
-    0, 0,                                       # target_system, target_component
-    mavutil.mavlink.MAV_CMD_DO_SET_SERVO,       # command
-    0,                                          # confirmation
-    9,                                          # servo number
-    PWM,                                        # servo position between 1000 and 2000
-    0, 0, 0, 0, 0)                              # param 3-7 not used
-
-    vehicle.send_mavlink(msg)
-
 print("Open video feed")
 
 # Main Loop
@@ -88,8 +76,12 @@ while(True):
 
     if dropped == False:
         cv2.putText(color,"payload armed",(width/2 - 50,height-20),font,fontScale,(255,255,255),lineType)
+        vehicle.channels.overrides['5'] = 1000
+        vehicle.flush()
     else:
         cv2.putText(color,"payload released",(width/2 - 60,height-20),font,fontScale,(255,255,255),lineType)
+        vehicle.channels.overrides['5'] = 2000
+        vehicle.flush()
 
     # Cross Hair
     if altitude < 30.5:
@@ -123,7 +115,7 @@ while(True):
             cv2.rectangle(color, (width/2 - 150, height), (width/2 + 150, height-60), (0,0,0), -1)
             cv2.putText(color,"payload released",(width/2 - 80,height-20),font,fontScale,(255,255,255),lineType)
             cv2.imwrite('payload_Release.png',color)
-            activateServo(1000)
+            vehicle.channels.overrides['5'] = 2000
         elif key == ord('r'):
             if record == False:
                 record = True
