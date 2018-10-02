@@ -7,10 +7,11 @@ from dronekit import connect, VehicleMode, Command, LocationGlobal
 from pymavlink import mavutil
 
 # Text formatting
-font                   = cv2.FONT_HERSHEY_SIMPLEX
-fontScale              = 0.6
-fontColor              = (0,255,0)
-lineType               = 2
+font          = cv2.FONT_HERSHEY_SIMPLEX
+fontScale1    = 0.6
+fontScale2    = 2
+fontColor     = (0,255,0)
+lineType      = 2
 
 # Variable definition(s)
 width = 1280
@@ -69,17 +70,17 @@ while(True):
     (dropTime, distance, xCorrection, yCorrection, scale) = targeting(groundSpeed, altitude, roll, pitch)
 
     # Print data to screen
-    cv2.putText(color,"Altitude (m): %s"%round(altitude,2),(10,20),font,fontScale,fontColor,lineType)
-    cv2.putText(color,"Ground speed (m/s): %s"%round(groundSpeed,2),(10,40),font,fontScale,fontColor,lineType)
-    cv2.putText(color,"X correction (m): %s"%round(xCorrection/scale,2),(10,60),font,fontScale,fontColor,lineType)
-    cv2.putText(color,"Y correction (m): %s"%round(yCorrection/scale,2),(10,80),font,fontScale,fontColor,lineType)
+    cv2.putText(color,"Current Altitude (ft): %s"%round(altitude*3.28084,0),(10,20),font,fontScale1,fontColor,lineType)
+    cv2.putText(color,"Ground speed (m/s): %s"%round(groundSpeed,2),(10,40),font,fontScale1,fontColor,lineType)
+    cv2.putText(color,"X correction (m): %s"%round(xCorrection/scale,2),(10,60),font,fontScale1,fontColor,lineType)
+    cv2.putText(color,"Y correction (m): %s"%round(yCorrection/scale,2),(10,80),font,fontScale1,fontColor,lineType)
 
     if dropped == False:
-        cv2.putText(color,"payload armed",(width/2 - 50,height-20),font,fontScale,(255,255,255),lineType)
+        cv2.putText(color,"payload armed",(width/2 - 50,height-20),font,fontScale1,(255,255,255),lineType)
         vehicle.channels.overrides['5'] = 1000
         vehicle.flush()
     else:
-        cv2.putText(color,"payload released",(width/2 - 60,height-20),font,fontScale,(255,255,255),lineType)
+        cv2.putText(color,"payload released",(width/2 - 60,height-20),font,fontScale1,(255,255,255),lineType)
         vehicle.channels.overrides['5'] = 2000
         vehicle.flush()
 
@@ -113,7 +114,7 @@ while(True):
         if key == ord(' '):
             dropped = True
             cv2.rectangle(color, (width/2 - 150, height), (width/2 + 150, height-60), (0,0,0), -1)
-            cv2.putText(color,"payload released",(width/2 - 80,height-20),font,fontScale,(255,255,255),lineType)
+            cv2.putText(color,"payload released",(width/2 - 80,height-20),font,fontScale1,(255,255,255),lineType)
             cv2.imwrite('payload_Release.png',color)
             vehicle.channels.overrides['5'] = 2000
         elif key == ord('r'):
