@@ -1,7 +1,20 @@
-# Aero_HLG_Targeting_II
-V2 Targeting and DAS system for Advanced Class SAE Aero Design competition. Python and OpenCV upgrade from previous Java/Processing program located [here](https://github.com/MarkSherstan/Aero_HLG_2018_DAS).
+# Aero_Advanced_2019
+2019 Data Acquisition System (DAS) for UofA's Aero HLG Advanced Class aircraft for the SAE Aero Design competition. Upgraded from 2018's program located [here](https://github.com/MarkSherstan/Aero_HLG_Targeting_II).
 
-Aero 2019 SAE rules have been posted and this program will no longer be updated due to the new competition requirements.
+## To be completed
+Transition from channel overrides to DO_SET_SERVO.
+
+```
+msg = vehicle.message_factory.command_long_encode(
+0, 0,                                 # target_system, target_component
+mavutil.mavlink.MAV_CMD_DO_SET_SERVO, # command
+0,                                    # confirmation
+1,                                    # servo number
+1500,                                 # servo position between 1000 and 2000
+0, 0, 0, 0, 0)                        # param 3 ~ 7 not used
+
+vehicle.send_mavlink(msg)
+```
 
 ## Usage
 Change line 22 to your serial port / USB Port in a format similar to:
@@ -40,6 +53,6 @@ The latests version of Ardupilot is required on the Pixhawk. Current PX4 softwar
 The MIT License (MIT)
 
 ## Hardware
-* Pixhawk px4 Flight Controller
+* Pixhawk 4 Flight Controller
 * 915 MHz SiK Telemetry Radio
 * Servo to be connected to channel 5 assigned pin
