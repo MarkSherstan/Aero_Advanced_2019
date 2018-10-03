@@ -17,7 +17,7 @@ vehicle.send_mavlink(msg)
 ```
 
 ## Usage
-Change line 22 to your serial port / USB Port in a format similar to:
+Change line 26 to your serial port / USB Port in a format similar to:
 * Linux - /dev/ttyUSB0
 * OSX - dev/tty.usbserial
 * Windows - com14
@@ -30,10 +30,10 @@ connectionString = "/dev/tty.usbserial-DN04K54A"
 
 The following are case sensative:
 * r --> Toggle recording (will write file with current time stamp).
-* (space) --> Release payload.
+* 1 --> Release CDA.
+* 2 --> Release habitat.
+* 3 --> Release water.
 * q --> Exit program, must be used to ensure recording is properly saved.
-
-Crosshairs for targeting are purple unless altitude is greater than 100 ft (~30.5 m) AGL (crosshairs then turn green).
 
 ## Requirements
 Built using:
@@ -55,4 +55,4 @@ The MIT License (MIT)
 ## Hardware
 * Pixhawk 4 Flight Controller
 * 915 MHz SiK Telemetry Radio
-* Servo to be connected to channel 5 assigned pin
+* Dropping servos to be connected on channels 5, 6, and 7
