@@ -140,7 +140,7 @@ while(True):
         cv2.putText(color,droppedCDA+" ft",(10,300),font,fontScale2,(255,255,255),lineType)
         vehicle.channels.overrides['5'] = 1000
         vehicle.flush()
-    elif
+    else:
         vehicle.channels.overrides['5'] = 2000
         vehicle.flush()
 
@@ -149,7 +149,7 @@ while(True):
         cv2.putText(color,droppedHabitat+" ft",(10,height-50),font,fontScale2,(255,255,255),lineType)
         vehicle.channels.overrides['6'] = 1000
         vehicle.flush()
-    elif
+    else:
         vehicle.channels.overrides['6'] = 2000
         vehicle.flush()
 
@@ -158,7 +158,7 @@ while(True):
         cv2.putText(color,droppedWater+" ft",(750,height-50),font,fontScale2,(255,255,255),lineType)
         vehicle.channels.overrides['7'] = 1000
         vehicle.flush()
-    elif
+    else:
         vehicle.channels.overrides['7'] = 2000
         vehicle.flush()
 
