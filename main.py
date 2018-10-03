@@ -9,15 +9,18 @@ from pymavlink import mavutil
 # Text formatting
 font          = cv2.FONT_HERSHEY_SIMPLEX
 fontScale1    = 0.6
-fontScale2    = 2
+fontScale2    = 5.5
 fontColor     = (0,255,0)
 lineType      = 2
 
 # Variable definition(s)
 width = 1280
 height = 720
-dropped = False
 record = False
+
+CDA = False
+WATER = False
+HABITAT = False
 
 # Connect to vehicle
 connectionString = "/dev/tty.usbserial-DN04K54A"
@@ -68,34 +71,96 @@ while(True):
     # Get real time info from plane and process it
     (groundSpeed, roll, pitch, altitude) = getFlightData()
     (dropTime, distance, xCorrection, yCorrection, scale) = targeting(groundSpeed, altitude, roll, pitch)
+    altitude = int(altitude*3.28084)
 
     # Print data to screen
-    cv2.putText(color,"Current Altitude (ft): %s"%round(altitude*3.28084,0),(10,20),font,fontScale1,fontColor,lineType)
-    cv2.putText(color,"Ground speed (m/s): %s"%round(groundSpeed,2),(10,40),font,fontScale1,fontColor,lineType)
-    cv2.putText(color,"X correction (m): %s"%round(xCorrection/scale,2),(10,60),font,fontScale1,fontColor,lineType)
-    cv2.putText(color,"Y correction (m): %s"%round(yCorrection/scale,2),(10,80),font,fontScale1,fontColor,lineType)
+    cv2.putText(color,"Current Altitude (ft): %s"%altitude,(1000,40),font,fontScale1,fontColor,lineType)
+    cv2.putText(color,"Ground speed (m/s): %s"%round(groundSpeed,2),(1000,60),font,fontScale1,fontColor,lineType)
+    cv2.putText(color,"X correction (m): %s"%round(xCorrection/scale,2),(1000,80),font,fontScale1,fontColor,lineType)
+    cv2.putText(color,"Y correction (m): %s"%round(yCorrection/scale,2),(1000,100),font,fontScale1,fontColor,lineType)
 
-    if dropped == False:
-        cv2.putText(color,"payload armed",(width/2 - 50,height-20),font,fontScale1,(255,255,255),lineType)
-        vehicle.channels.overrides['5'] = 1000
-        vehicle.flush()
-    else:
-        cv2.putText(color,"payload released",(width/2 - 60,height-20),font,fontScale1,(255,255,255),lineType)
-        vehicle.channels.overrides['5'] = 2000
-        vehicle.flush()
+    now = datetime.datetime.now()
+    timeStamp = now.strftime("%Y-%m-%d %H:%M:%S")
+    cv2.putText(color,timeStamp,(1000,20),font,fontScale1,fontColor,lineType)
 
     # Cross Hair
-    if altitude < 30.5:
-        crossHairColor = (255,0,255) # Magenta
-    else:
-        crossHairColor = (0,255,0)
-
+    crossHairColor = (0,255,0)
     cv2.line(color,(width/2+10+xCorrection,height/2+10-yCorrection),(width/2+30+xCorrection,height/2+30-yCorrection),crossHairColor,5)
     cv2.line(color,(width/2-10+xCorrection,height/2+10-yCorrection),(width/2-30+xCorrection,height/2+30-yCorrection),crossHairColor,5)
     cv2.line(color,(width/2+10+xCorrection,height/2-10-yCorrection),(width/2+30+xCorrection,height/2-30-yCorrection),crossHairColor,5)
     cv2.line(color,(width/2-10+xCorrection,height/2-10-yCorrection),(width/2-30+xCorrection,height/2-30-yCorrection),crossHairColor,5)
 
     cv2.circle(color, (width/2+xCorrection,height/2-yCorrection),5,crossHairColor,-1)
+
+    # Keyboard Toggles
+    key = cv2.waitKey(1)
+
+    if key != -1:
+        if key == ord('1'):
+            CDA = True
+            droppedCDA = str(altitude)
+            cv2.putText(color,"CDA",(10,150),font,fontScale2,(255,255,255),lineType)
+            cv2.putText(color,droppedCDA+" ft",(10,300),font,fontScale2,(255,255,255),lineType)
+            cv2.imwrite('CDA_Release.png',color)
+
+            vehicle.channels.overrides['5'] = 1000
+            vehicle.flush()
+
+        elif key == ord('2'):
+            HABITAT = True
+            droppedHabitat = str(altitude)
+            cv2.putText(color,"Habitat",(10,height-200),font,fontScale2,(255,255,255),lineType)
+            cv2.putText(color,droppedHabitat+" ft",(10,height-50),font,fontScale2,(255,255,255),lineType)
+            cv2.imwrite('habitat_Release.png',color)
+
+            vehicle.channels.overrides['6'] = 1000
+            vehicle.flush()
+
+        elif key == ord('3'):
+            WATER = True
+            droppedWater = str(altitude)
+            cv2.putText(color,"Water",(750,height-200),font,fontScale2,(255,255,255),lineType)
+            cv2.putText(color,droppedWater+" ft",(750,height-50),font,fontScale2,(255,255,255),lineType)
+            cv2.imwrite('water_Release.png',color)
+
+            vehicle.channels.overrides['7'] = 1000
+            vehicle.flush()
+
+        elif key == ord('r'):
+            if record == False:
+                record = True
+            else:
+                record = False
+
+        elif key == ord('q'):
+            break
+
+    if CDA == True:
+        cv2.putText(color,"CDA",(10,150),font,fontScale2,(255,255,255),lineType)
+        cv2.putText(color,droppedCDA+" ft",(10,300),font,fontScale2,(255,255,255),lineType)
+        vehicle.channels.overrides['5'] = 1000
+        vehicle.flush()
+    elif
+        vehicle.channels.overrides['5'] = 2000
+        vehicle.flush()
+
+    if HABITAT == True:
+        cv2.putText(color,"Habitat",(10,height-200),font,fontScale2,(255,255,255),lineType)
+        cv2.putText(color,droppedHabitat+" ft",(10,height-50),font,fontScale2,(255,255,255),lineType)
+        vehicle.channels.overrides['6'] = 1000
+        vehicle.flush()
+    elif
+        vehicle.channels.overrides['6'] = 2000
+        vehicle.flush()
+
+    if WATER == True:
+        cv2.putText(color,"Water",(750,height-200),font,fontScale2,(255,255,255),lineType)
+        cv2.putText(color,droppedWater+" ft",(750,height-50),font,fontScale2,(255,255,255),lineType)
+        vehicle.channels.overrides['7'] = 1000
+        vehicle.flush()
+    elif
+        vehicle.channels.overrides['7'] = 2000
+        vehicle.flush()
 
     # Record footage and display red or white circle
     if record == True:
@@ -107,24 +172,6 @@ while(True):
     # Display the resulting frame
     cv2.imshow("Aero DAS and Vision System",color)
 
-    # Keyboard Toggles
-    key = cv2.waitKey(1)
-
-    if key != -1:
-        if key == ord(' '):
-            dropped = True
-            cv2.rectangle(color, (width/2 - 150, height), (width/2 + 150, height-60), (0,0,0), -1)
-            cv2.putText(color,"payload released",(width/2 - 80,height-20),font,fontScale1,(255,255,255),lineType)
-            cv2.imwrite('payload_Release.png',color)
-            vehicle.channels.overrides['5'] = 2000
-        elif key == ord('r'):
-            if record == False:
-                record = True
-            else:
-                record = False
-        elif key == ord('q'):
-            break
-
 # When everything done, release the capture
 cap.release()
 out.release()
@@ -133,4 +180,4 @@ cv2.destroyAllWindows()
 # Close the vehicle and/or simulator
 vehicle.close()
 
-print("Closing all")
+print("Closing video feed")
