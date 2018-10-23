@@ -2,18 +2,10 @@
 2019 Data Acquisition System (DAS) for UofA's Aero HLG Advanced Class aircraft for the SAE Aero Design competition. Upgraded from 2018's program located [here](https://github.com/MarkSherstan/Aero_HLG_Targeting_II).
 
 ## To be completed
-Transition from channel overrides to DO_SET_SERVO.
+Transition from channel overrides to DO_SET_SERVO. Switch branches with: 
 
 ```
-msg = vehicle.message_factory.command_long_encode(
-0, 0,                                 # target_system, target_component
-mavutil.mavlink.MAV_CMD_DO_SET_SERVO, # command
-0,                                    # confirmation
-1,                                    # servo number
-1500,                                 # servo position between 1000 and 2000
-0, 0, 0, 0, 0)                        # param 3 ~ 7 not used
-
-vehicle.send_mavlink(msg)
+git checkout DO_SET_SERVO
 ```
 
 ## Usage
