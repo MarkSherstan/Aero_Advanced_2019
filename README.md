@@ -56,3 +56,14 @@ The MIT License (MIT)
 * Pixhawk 4 Flight Controller
 * 915 MHz SiK Telemetry Radio
 * Dropping servos to be connected on channels 5, 6, and 7
+
+## Additional Software Notes
+Current build on the Pixhawk 4 is ArduPlane 3.9.2
+
+QGroundControl 3.4.4.0 --> Not recognizing board when running ArduPlane, no issues when running PX4 1.8.0 stable release.  
+
+APM Planner 2.0.26-rc2_win64 (beta version - http://firmware.ardupilot.org/Tools/APMPlanner/beta/). Also works on stable version on mac OS.
+
+Mission Planner 1.3.58 (beta version? - http://firmware.ardupilot.org/Tools/MissionPlanner/beta/) is required to flash new firmware (ArduPlane) due to FMUv5.
+
+Builds for more development van be found [here](http://firmware.ardupilot.org/)
