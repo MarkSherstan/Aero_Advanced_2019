@@ -2,6 +2,7 @@ import cv2
 import random
 import math
 import datetime
+import time
 import numpy as np
 from dronekit import connect, VehicleMode, Command, LocationGlobal
 from pymavlink import mavutil
@@ -23,7 +24,7 @@ WATER = False
 HABITAT = False
 
 # Connect to vehicle
-connectionString = "/dev/tty.usbserial-DN04K54A"
+connectionString = "/dev/tty.usbserial-DN04T9FH"
 print "Connecting on: ",connectionString
 vehicle = connect(connectionString, wait_ready = ["groundspeed","attitude","location.global_relative_frame"], baud = 57600)
 
@@ -58,6 +59,12 @@ def targeting(groundSpeed, altitude, roll, pitch):
     yCorrection = int((distance - math.tan(pitch) * altitude) * scale)      # Positive x is right
 
     return (dropTime, distance, xCorrection, yCorrection, scale)
+
+# Vehicle must be armed --> double check if this is true
+while not vehicle.armed:
+    print("Waiting for arming...")
+    print(vehicle.armed)
+    time.sleep(1)
 
 print("Open video feed")
 
@@ -123,8 +130,20 @@ while(True):
             cv2.putText(color,droppedWater+" ft",(750,height-50),font,fontScale2,(255,255,255),lineType)
             cv2.imwrite('water_Release.png',color)
 
-            vehicle.channels.overrides['7'] = 1000
+
+            msg = vehicle.message_factory.command_long_encode(
+            0, 0,                                 # target_system, target_component
+            mavutil.mavlink.MAV_CMD_DO_SET_SERVO, # command
+            0,                                    # confirmation
+            7,                                    # servo number
+            1800,                                 # servo position between 1000 and 2000
+            0, 0, 0, 0, 0)                        # param 3 ~ 7 not used
+
+            vehicle.send_mavlink(msg)
             vehicle.flush()
+
+            # vehicle.channels.overrides['7'] = 1000
+            # vehicle.flush()
 
         elif key == ord('r'):
             if record == False:
