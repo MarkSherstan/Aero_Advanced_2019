@@ -7,7 +7,7 @@
 - [ ] Test with multiple servos
 - [ ] OpenCV version and independent version
 - [ ] Test [this](https://stackoverflow.com/questions/22146205/grab-frame-ntsctousb-dongle-opencv2-python-wrapper/22183737#22183737) fix for RCA connection --> Works in test. Confirm in code
-- [ ] Hough Line Transform
+- [ ] Hough Line Transform (toggle with c button?)
 
 
 ## Requirements
@@ -96,6 +96,8 @@ Use Mission Planner or APM Planner 2.0 follow the guide [here](http://ardupilot.
 
 ## FPV and OpenCV
 
+The second version of the program... 
+
 ### Hardware 
 * AKK FX3 5.8 GHz FPV transmitter
 * Duo5800v4.1 FPV receiver
@@ -103,9 +105,11 @@ Use Mission Planner or APM Planner 2.0 follow the guide [here](http://ardupilot.
 
 ### Transmitter and Receiver Tables 
 
+The following tables are pulled for the data sheets provided with the hardware and are placed here as a quick refernce. 
+
 #### FPV Transmitter Menu Table
 
-| Btn Press | Description  | Values...|     	    |     	    |      	    |      	    |      	    |      	    |      	    |
+| Btn Press | Description  | Value    | Value     | Value     | Value     | Value     | Value     | Value     | Value     | 
 | ----------| ------------ | -------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
 | 1x	      | Channel	     | 1	      | 2	        | 3	        | 4	        | 5	        | 6	        | 7	        | 8	        |
 | 2x	      | Band	       | A	      | b	        | E	        | F	        | r         |           |           |           |
