@@ -2,6 +2,25 @@
 2019 Data Acquisition System (DAS) for UofA's Aero HLG Advanced Class aircraft for the SAE Aero Design competition. Upgraded from previous program located [here](https://github.com/MarkSherstan/Aero_HLG_2018_DAS).
 
 
+## To do
+- [ ] Bind the telemtry radios on specific channel
+- [ ] Test with multiple servos
+- [ ] OpenCV version and independent version
+- [ ] Test [this](https://stackoverflow.com/questions/22146205/grab-frame-ntsctousb-dongle-opencv2-python-wrapper/22183737#22183737) fix for RCA connection --> Works in test. Confirm in code
+- [ ] Hough Line Transform
+
+
+## Requirements
+Built using:
+* [Python](https://www.python.org) 2.7.15
+* [OpenCV](https://opencv.org) 3.4.2
+* [Dronekit](http://python.dronekit.io) 2.9.1
+* [pySerial](https://pypi.org/project/pyserial/) 3.4
+* [numpy](http://www.numpy.org/) 1.15.4
+
+All dependencies should be installed with it, otherwise follow the errors and post an issue so I can update the instructions.
+
+
 ## Usage
 Change "connectionString" variable to serial port / USB Port in a format similar to:
 * Linux - /dev/ttyUSB0
@@ -22,17 +41,6 @@ The following are case sensative:
 * q --> Exit program, must be used to ensure recording is properly saved.
 
 
-## Requirements
-Built using:
-* [Python](https://www.python.org) 2.7.15
-* [OpenCV](https://opencv.org) 3.4.2
-* [Dronekit](http://python.dronekit.io) 2.9.1
-* [pySerial](https://pypi.org/project/pyserial/) 3.4
-* [numpy](http://www.numpy.org/) 1.15.4
-
-All dependencies should be installed with it, otherwise follow the errors and post an issue so I can update the instructions.
-
-
 ## License
 The MIT License (MIT)
 
@@ -40,9 +48,7 @@ The MIT License (MIT)
 ## Hardware
 * Pixhawk 4 Flight Controller
 * 915 MHz SiK Telemetry Radio
-* AKK FX3 5.8 GHz FPV transmitter
-* Duo5800v4.1 FPV receiver
-* VC500 image capture device
+
 
 
 ## Help
@@ -51,57 +57,6 @@ Before first connection, connect with [QGroundControl](https://docs.qgroundcontr
 Ensure firmware is up to date on Telemetry Radios. Using QGroundControl go to, Vehicle set up --> Firmware --> and follow onscreen instructions.
 
 The latest version of ArduPilot is required on the Pixhawk. Current PX4 software build does not support servo commands or channel overrides (January 2019) ArduPlane 3.9.4 confirmed to be working and must be installed with ChibiOS.
-
-
-## Video feed
-Should be blue not black when disconnected. Black indicates driver error. Try reinstalling and restarting computer or try [this](https://www.youtube.com/watch?v=0F2FuWTExoY) fix.
-
-
-## PX4 Parameters
-AHRS_GPS_USE
-ARMING_CHECK
-SERVO_RC --> Write instructions
-
-
-## FPV Transmitter
-
-Menu Table:
-
-|   	      |              |     	    |     	    |     	    |      	    |      	    |      	    |      	    |      	    |
-| ----------| ------------ | -------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
-| 1x	      | Channel	     | 1	      | 2	        | 3	        | 4	        | 5	        | 6	        | 7	        | 8	        |
-| 2x	      | Band	       | A	      | b	        | E	        | F	        | r         |           |           |           |
-| 3x	      | Power Level  | 25  	    | 200  	    | 400  	    | 600  	    |      	    |      	    |      	    |      	    |
-
-Frequency Table:
-
-| Channel     | 1         | 2        | 3        | 4        | 5        | 6        | 7        | 8        |           |
-| ----------- | --------- | -------- | ---------| -------- | -------- | -------- | -------- | -------- | --------- |
-| 1 (Band A)  | 5865	    | 5845	   | 5825	    | 5805	   | 5785	    | 5765	   | 5745	    | 5725	   | MHZ	     |
-| 2 (Band B)  | 5733 	    | 5752	   | 5771	    | 5790	   | 5809	    | 5828	   | 5847	    | 5866	   | MHZ	     |
-| 3 (Band E)  | 5705	    | 5685	   | 5665	    | 5645	   | 5885	    | 5905	   | 5925	    | 5945	   | MHZ	     |
-| 4 (Band F)  | 5740	    | 5760	   | 5780	    | 5800	   | 5820	    | 5840	   | 5860	    | 5880	   | MHZ	     |
-| 5 (Race)	  | 5658	    | 5695	   | 5732	    | 5769	   | 5806	    | 5843	   | 5880	    | 5917	   | MHZ	     |
-|             |           |          |          |          |          |          |          |          |           |  
-| Power Level | 25        | 200      | 400      | 600      |          |          |          |          | mW        |  
-
-## FPV Receiver
-
-| Channel / Band    | 1         | 2        | 3        | 4        | 5        | 6        | 7        | 8        |           |
-| ----------------- | --------- | -------- | ---------| -------- | -------- | -------- | -------- | -------- | --------- |
-| 1                 | 5740	    | 5760	   | 5780	    | 5800	   | 5820	    | 5840	   | 5860	    | 5880	   | IRC/Fs	   |
-| 2                 | 5658	    | 5695	   | 5732	    | 5769	   | 5806	    | 5843	   | 5880	    | 5917	   | Race	     |
-| 3                 | 5705	    | 5685	   | 5665	    | 5645	   | 5885	    | 5905	   | 5925	    | 5945	   | Band E	   |
-| 4                 | 5733 	    | 5752	   | 5771	    | 5790	   | 5809	    | 5828	   | 5847	    | 5866	   | Band B	   |
-| 5                 | 5865	    | 5845	   | 5825	    | 5805	   | 5785	    | 5765	   | 5745	    | 5725	   | Band A    |
-
-
-## To do
-* Bind the telemtry radios on specific channel
-* Test with multiple servos
-* OpenCV version and independent version
-* Test [this](https://stackoverflow.com/questions/22146205/grab-frame-ntsctousb-dongle-opencv2-python-wrapper/22183737#22183737) fix for RCA connection --> Works in test. Confirm in code
-* Hough Line Transform
 
 
 ## Wiring and Connection Order
@@ -122,9 +77,61 @@ I/O PWM Out:
 * Channel 5 --> Pin 5 --> Not working
 
 
-## Other Notes
-APM Planner 2.0.26-rc2_win64 (beta version - http://firmware.ardupilot.org/Tools/APMPlanner/beta/). Also works on stable version on mac OS.
+## PX4 Parameters
+AHRS_GPS_USE
+ARMING_CHECK
+SERVO_RC --> Write instructions
 
-Mission Planner 1.3.58 (beta version? - http://firmware.ardupilot.org/Tools/MissionPlanner/beta/) is required to flash new firmware (ArduPlane) due to FMUv5.
 
-Builds for more development van be found [here](http://firmware.ardupilot.org/)
+## Configuring Auxiliary (dropping) Servo
+* Connect to Q Ground Control
+* Navigate to parameters and search for SERVO\#\_FUNCTION where the ( ) is the number of the servo and change the parameter from disabled to RCIN ( )
+* Value must be either 6, 7, or 8 as 1-4 are used for standard controls and 5 is for switching flight modes. Channels higher than 8 are not supported and these must not be mapped to the transmitter.
+
+
+## Pairing Telemtry Radios
+Use Mission Planner or APM Planner 2.0 follow the guide [here](http://ardupilot.org/copter/docs/common-configuring-a-telemetry-radio-using-mission-planner.html) to pair the radios on a specific channel. The radios are currently configured on Net ID
+
+
+
+## FPV and OpenCV
+
+### Hardware 
+* AKK FX3 5.8 GHz FPV transmitter
+* Duo5800v4.1 FPV receiver
+* VC500 image capture device
+
+### Transmitter and Receiver Tables 
+
+#### FPV Transmitter Menu Table
+
+| Btn Press | Description  | Values...|     	    |     	    |      	    |      	    |      	    |      	    |      	    |
+| ----------| ------------ | -------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
+| 1x	      | Channel	     | 1	      | 2	        | 3	        | 4	        | 5	        | 6	        | 7	        | 8	        |
+| 2x	      | Band	       | A	      | b	        | E	        | F	        | r         |           |           |           |
+| 3x	      | Power Level  | 25  	    | 200  	    | 400  	    | 600  	    |      	    |      	    |      	    |      	    |
+
+#### FPV Transmitter Frequency Table
+
+| Channel     | 1         | 2        | 3        | 4        | 5        | 6        | 7        | 8        |           |
+| ----------- | --------- | -------- | ---------| -------- | -------- | -------- | -------- | -------- | --------- |
+| 1 (Band A)  | 5865	    | 5845	   | 5825	    | 5805	   | 5785	    | 5765	   | 5745	    | 5725	   | MHZ	     |
+| 2 (Band B)  | 5733 	    | 5752	   | 5771	    | 5790	   | 5809	    | 5828	   | 5847	    | 5866	   | MHZ	     |
+| 3 (Band E)  | 5705	    | 5685	   | 5665	    | 5645	   | 5885	    | 5905	   | 5925	    | 5945	   | MHZ	     |
+| 4 (Band F)  | 5740	    | 5760	   | 5780	    | 5800	   | 5820	    | 5840	   | 5860	    | 5880	   | MHZ	     |
+| 5 (Race)	  | 5658	    | 5695	   | 5732	    | 5769	   | 5806	    | 5843	   | 5880	    | 5917	   | MHZ	     |
+|             |           |          |          |          |          |          |          |          |           |  
+| Power Level | 25        | 200      | 400      | 600      |          |          |          |          | mW        |  
+
+#### FPV Receiver Frequency Table
+
+| Channel / Band    | 1         | 2        | 3        | 4        | 5        | 6        | 7        | 8        |           |
+| ----------------- | --------- | -------- | ---------| -------- | -------- | -------- | -------- | -------- | --------- |
+| 1                 | 5740	    | 5760	   | 5780	    | 5800	   | 5820	    | 5840	   | 5860	    | 5880	   | IRC/Fs	   |
+| 2                 | 5658	    | 5695	   | 5732	    | 5769	   | 5806	    | 5843	   | 5880	    | 5917	   | Race	     |
+| 3                 | 5705	    | 5685	   | 5665	    | 5645	   | 5885	    | 5905	   | 5925	    | 5945	   | Band E	   |
+| 4                 | 5733 	    | 5752	   | 5771	    | 5790	   | 5809	    | 5828	   | 5847	    | 5866	   | Band B	   |
+| 5                 | 5865	    | 5845	   | 5825	    | 5805	   | 5785	    | 5765	   | 5745	    | 5725	   | Band A    |
+
+### Video Feed from FPV
+Should be blue not black when disconnected. Black indicates driver error. Try reinstalling and restarting computer or try [this](https://www.youtube.com/watch?v=0F2FuWTExoY) fix.
