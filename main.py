@@ -8,11 +8,11 @@ from dronekit import connect, VehicleMode, Command, LocationGlobal
 from pymavlink import mavutil
 
 # Text formatting
-font          = cv2.FONT_HERSHEY_SIMPLEX
-fontScale1    = 0.6
-fontScale2    = 5.5
-fontColor     = (0,255,0)
-lineType      = 2
+font        = cv2.FONT_HERSHEY_SIMPLEX
+fontScale1  = 0.6
+fontScale2  = 5.5
+fontColor   = (0,255,0)
+lineType    = 2
 
 # Variable definition(s)
 width = 1280
@@ -26,7 +26,7 @@ HABITAT = False
 # Connect to vehicle
 connectionString = "/dev/tty.usbserial-DN04T9FH"
 print "Connecting on: ",connectionString
-vehicle = connect(connectionString, wait_ready = ["groundspeed","attitude","location.global_relative_frame"], baud = 57600)
+vehicle = connect(connectionString, wait_ready=["groundspeed","attitude","location.global_relative_frame"], baud=57600)
 
 # Camera properties, set time stamp, codec, and video recorder
 cap = cv2.VideoCapture(0)
@@ -60,12 +60,12 @@ def targeting(groundSpeed, altitude, roll, pitch):
 
     return (dropTime, distance, xCorrection, yCorrection, scale)
 
-# Vehicle must be armed --> double check if this is true
-while not vehicle.armed:
-    print("Waiting for arming...")
-    print(vehicle.armed)
-    time.sleep(1)
+# Set all servos to closed
+vehicle.channels.overrides['6'] = 2000
+vehicle.channels.overrides['7'] = 2000
+vehicle.channels.overrides['8'] = 2000
 
+# Display message
 print("Open video feed")
 
 # Main Loop
@@ -130,20 +130,8 @@ while(True):
             cv2.putText(color,droppedWater+" ft",(750,height-50),font,fontScale2,(255,255,255),lineType)
             cv2.imwrite('water_Release.png',color)
 
-
-            msg = vehicle.message_factory.command_long_encode(
-            0, 0,                                 # target_system, target_component
-            mavutil.mavlink.MAV_CMD_DO_SET_SERVO, # command
-            0,                                    # confirmation
-            7,                                    # servo number
-            1800,                                 # servo position between 1000 and 2000
-            0, 0, 0, 0, 0)                        # param 3 ~ 7 not used
-
-            vehicle.send_mavlink(msg)
+            vehicle.channels.overrides['7'] = 1000
             vehicle.flush()
-
-            # vehicle.channels.overrides['7'] = 1000
-            # vehicle.flush()
 
         elif key == ord('r'):
             if record == False:
@@ -157,28 +145,28 @@ while(True):
     if CDA == True:
         cv2.putText(color,"CDA",(10,150),font,fontScale2,(255,255,255),lineType)
         cv2.putText(color,droppedCDA+" ft",(10,300),font,fontScale2,(255,255,255),lineType)
-        vehicle.channels.overrides['5'] = 1000
-        vehicle.flush()
-    else:
-        vehicle.channels.overrides['5'] = 2000
-        vehicle.flush()
-
-    if HABITAT == True:
-        cv2.putText(color,"Habitat",(10,height-200),font,fontScale2,(255,255,255),lineType)
-        cv2.putText(color,droppedHabitat+" ft",(10,height-50),font,fontScale2,(255,255,255),lineType)
         vehicle.channels.overrides['6'] = 1000
         vehicle.flush()
     else:
         vehicle.channels.overrides['6'] = 2000
         vehicle.flush()
 
-    if WATER == True:
-        cv2.putText(color,"Water",(750,height-200),font,fontScale2,(255,255,255),lineType)
-        cv2.putText(color,droppedWater+" ft",(750,height-50),font,fontScale2,(255,255,255),lineType)
+    if HABITAT == True:
+        cv2.putText(color,"Habitat",(10,height-200),font,fontScale2,(255,255,255),lineType)
+        cv2.putText(color,droppedHabitat+" ft",(10,height-50),font,fontScale2,(255,255,255),lineType)
         vehicle.channels.overrides['7'] = 1000
         vehicle.flush()
     else:
         vehicle.channels.overrides['7'] = 2000
+        vehicle.flush()
+
+    if WATER == True:
+        cv2.putText(color,"Water",(750,height-200),font,fontScale2,(255,255,255),lineType)
+        cv2.putText(color,droppedWater+" ft",(750,height-50),font,fontScale2,(255,255,255),lineType)
+        vehicle.channels.overrides['8'] = 1000
+        vehicle.flush()
+    else:
+        vehicle.channels.overrides['8'] = 2000
         vehicle.flush()
 
     # Record footage and display red or white circle
