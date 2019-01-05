@@ -65,6 +65,12 @@ vehicle.channels.overrides['6'] = 2000
 vehicle.channels.overrides['7'] = 2000
 vehicle.channels.overrides['8'] = 2000
 
+# Vehicle must be armed for throttle to work
+while not vehicle.armed:
+    print("Waiting for arming...")
+    print(vehicle.armed)
+    time.sleep(1)
+
 # Display message
 print("Open video feed")
 
