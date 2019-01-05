@@ -1,13 +1,21 @@
 # Aero_Advanced_2019
 2019 Data Acquisition System (DAS) for UofA's Aero HLG Advanced Class aircraft for the SAE Aero Design competition. Upgraded from previous program located [here](https://github.com/MarkSherstan/Aero_HLG_2018_DAS).
 
+There are five different versions of the program:
+* servo.py - Pixhawk 4 is only used to activate servos and does not control the plane.
+* FPV.py - FPV video feed is only displayed.
+* servo_FPV.py - Pixhawk 4 is only used to activate servos and does not control the plane. FPV video feed is also displayed.
+* servo_FC.py - Pixhawk 4 is used to activate servos and also provides additional controls to the plane such as manual mode, autostabilization, and fly by wire b (FBWB).
+* servo_FC_FPV.py - Pixhawk 4 is used to activate servos and also provides additional controls to the plane such as manual mode, autostabilization, and fly by wire b (FBWB). FPV video feed is included with a targetting overlay.
+
 
 ## To do
 - [ ] Bind the telemtry radios on specific channel
-- [ ] Test with multiple servos
-- [ ] OpenCV version and independent version
+- [x] Test with multiple servos --> Passed
+- [ ] OpenCV version and independent version and version standalone
 - [ ] Test [this](https://stackoverflow.com/questions/22146205/grab-frame-ntsctousb-dongle-opencv2-python-wrapper/22183737#22183737) fix for RCA connection --> Works in test. Confirm in code
-- [ ] Hough Line Transform (toggle with c button?)
+- [x] Hough Line Transform (toggle with c button?) --> Ignore
+- [ ] Add fail safe if video feed is lost
 
 
 ## Requirements
@@ -45,10 +53,11 @@ The following are case sensative:
 The MIT License (MIT)
 
 
+##
+
 ## Hardware
 * Pixhawk 4 Flight Controller
 * 915 MHz SiK Telemetry Radio
-
 
 
 ## Help
@@ -81,7 +90,7 @@ I/O PWM Out:
 AHRS_GPS_USE
 ARMING_CHECK
 SERVO_RC --> Write instructions
-
+BRD_SAFETYENABLE --> make sure it is disabled as we have a shunt plug
 
 ## Configuring Auxiliary (dropping) Servo
 * Connect to Q Ground Control
@@ -93,49 +102,26 @@ SERVO_RC --> Write instructions
 Use Mission Planner or APM Planner 2.0 follow the guide [here](http://ardupilot.org/copter/docs/common-configuring-a-telemetry-radio-using-mission-planner.html) to pair the radios on a specific channel. The radios are currently configured on Net ID
 
 
+## ARMING
+Down to the right on throttle otherwise servo 3 (throttle) wont do anything
+Compass must be calibrated with flight controller and not sperate. Disable internal
+
+How to disable GPS?
+
+ARMING_RUDDER --> No disable option but can change it here
+
 
 ## FPV and OpenCV
+The second version of the program...
 
-The second version of the program... 
 
-### Hardware 
+### Hardware
 * AKK FX3 5.8 GHz FPV transmitter
 * Duo5800v4.1 FPV receiver
 * VC500 image capture device
 
-### Transmitter and Receiver Tables 
-
-The following tables are pulled for the data sheets provided with the hardware and are placed here as a quick refernce. 
-
-#### FPV Transmitter Menu Table
-
-| Btn Press | Description  | Value    | Value     | Value     | Value     | Value     | Value     | Value     | Value     | 
-| ----------| ------------ | -------- | --------- | --------- | --------- | --------- | --------- | --------- | --------- |
-| 1x	      | Channel	     | 1	      | 2	        | 3	        | 4	        | 5	        | 6	        | 7	        | 8	        |
-| 2x	      | Band	       | A	      | b	        | E	        | F	        | r         |           |           |           |
-| 3x	      | Power Level  | 25  	    | 200  	    | 400  	    | 600  	    |      	    |      	    |      	    |      	    |
-
-#### FPV Transmitter Frequency Table
-
-| Channel     | 1         | 2        | 3        | 4        | 5        | 6        | 7        | 8        |           |
-| ----------- | --------- | -------- | ---------| -------- | -------- | -------- | -------- | -------- | --------- |
-| 1 (Band A)  | 5865	    | 5845	   | 5825	    | 5805	   | 5785	    | 5765	   | 5745	    | 5725	   | MHZ	     |
-| 2 (Band B)  | 5733 	    | 5752	   | 5771	    | 5790	   | 5809	    | 5828	   | 5847	    | 5866	   | MHZ	     |
-| 3 (Band E)  | 5705	    | 5685	   | 5665	    | 5645	   | 5885	    | 5905	   | 5925	    | 5945	   | MHZ	     |
-| 4 (Band F)  | 5740	    | 5760	   | 5780	    | 5800	   | 5820	    | 5840	   | 5860	    | 5880	   | MHZ	     |
-| 5 (Race)	  | 5658	    | 5695	   | 5732	    | 5769	   | 5806	    | 5843	   | 5880	    | 5917	   | MHZ	     |
-|             |           |          |          |          |          |          |          |          |           |  
-| Power Level | 25        | 200      | 400      | 600      |          |          |          |          | mW        |  
-
-#### FPV Receiver Frequency Table
-
-| Channel / Band    | 1         | 2        | 3        | 4        | 5        | 6        | 7        | 8        |           |
-| ----------------- | --------- | -------- | ---------| -------- | -------- | -------- | -------- | -------- | --------- |
-| 1                 | 5740	    | 5760	   | 5780	    | 5800	   | 5820	    | 5840	   | 5860	    | 5880	   | IRC/Fs	   |
-| 2                 | 5658	    | 5695	   | 5732	    | 5769	   | 5806	    | 5843	   | 5880	    | 5917	   | Race	     |
-| 3                 | 5705	    | 5685	   | 5665	    | 5645	   | 5885	    | 5905	   | 5925	    | 5945	   | Band E	   |
-| 4                 | 5733 	    | 5752	   | 5771	    | 5790	   | 5809	    | 5828	   | 5847	    | 5866	   | Band B	   |
-| 5                 | 5865	    | 5845	   | 5825	    | 5805	   | 5785	    | 5765	   | 5745	    | 5725	   | Band A    |
 
 ### Video Feed from FPV
 Should be blue not black when disconnected. Black indicates driver error. Try reinstalling and restarting computer or try [this](https://www.youtube.com/watch?v=0F2FuWTExoY) fix.
+
+![Text goes here](https://github.com/MarkSherstan/Aero_Advanced_2019/blob/DO_SET_SERVO/Resources/wiringDiagramFPVTest.png)
