@@ -24,12 +24,15 @@ WATER = False
 HABITAT = False
 
 # Connect to vehicle
-connectionString = "/dev/tty.usbserial-DN04T9FH"
+connectionString = 'com8'
 print "Connecting on: ",connectionString
 vehicle = connect(connectionString, wait_ready=["groundspeed","attitude","location.global_relative_frame"], baud=57600)
 
 # Camera properties, set time stamp, codec, and video recorder
 cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_FFMPEG,True)
+cap.set(cv2.CAP_PROP_FPS,30)
+
 ret = cap.set(3,width)
 ret = cap.set(4,height)
 
