@@ -9,7 +9,7 @@ cam.set(cv2.CAP_PROP_FPS,30)
 while(True):
     ret,frame = cam.read()
     frameNew = cv2.resize(frame, (1920,1080))
-    cv2.imshow('FPV Video Feed',frameNew)
+    cv2.imshow('Aero HLG DAS - FPV.py',frameNew)
 
     if (cv2.waitKey(1) & 0xFF == ord('q')):
         break
