@@ -10,9 +10,9 @@ There are five different versions of the program:
 
 
 ## To do
-- [ ] Bind the telemtry radios on specific channel
+- [x] Bind the telemtry radios on specific channel
 - [x] Test with multiple servos --> Passed
-- [ ] OpenCV version and independent version and version standalone
+- [ ] Create all the versions of software
 - [ ] Test [this](https://stackoverflow.com/questions/22146205/grab-frame-ntsctousb-dongle-opencv2-python-wrapper/22183737#22183737) fix for RCA connection --> Works in test. Confirm in code
 - [x] Hough Line Transform (toggle with c button?) --> Ignore
 - [ ] Add fail safe if video feed is lost
@@ -63,7 +63,7 @@ The MIT License (MIT)
 ## Help
 Before first connection, connect with [QGroundControl](https://docs.qgroundcontrol.com/en/releases/daily_builds.html) (QGC) to ensure communication and help limit time out delays. The beta version or daily build must be used. Stable version will not work as of January 1, 2019.
 
-Ensure firmware is up to date on Telemetry Radios. Using QGroundControl go to, Vehicle set up --> Firmware --> and follow onscreen instructions.
+
 
 The latest version of ArduPilot is required on the Pixhawk. Current PX4 software build does not support servo commands or channel overrides (January 2019) ArduPlane 3.9.4 confirmed to be working and must be installed with ChibiOS.
 
@@ -98,15 +98,29 @@ BRD_SAFETYENABLE --> make sure it is disabled as we have a shunt plug
 * Value must be either 6, 7, or 8 as 1-4 are used for standard controls and 5 is for switching flight modes. Channels higher than 8 are not supported and these must not be mapped to the transmitter.
 
 
-## Pairing Telemtry Radios
-Use Mission Planner or APM Planner 2.0 follow the guide [here](http://ardupilot.org/copter/docs/common-configuring-a-telemetry-radio-using-mission-planner.html) to pair the radios on a specific channel. The radios are currently configured on Net ID
+## Telemtry Radios
 
+### Pairing the Radios
+Use [Mission Planner](http://ardupilot.org/planner/docs/mission-planner-installation.html) and follow the guide [here](http://ardupilot.org/copter/docs/common-configuring-a-telemetry-radio-using-mission-planner.html) to pair the radios on a specific channel. The radios are currently configured on Net ID 17 (the deafult is 25)
+
+
+### LEDs
+green LED blinking - searching for another radios
+green LED solid - link is established with another radios
+red LED flashing - transmitting data
+red LED solid - in firmware update mode
+
+### Updating
+DO NOT COMPLETE --> ALREADY UPDATED. Only do if major gltich
+Ensure firmware is up to date on Telemetry Radios. Using QGroundControl go to, Vehicle set up --> Firmware --> and follow onscreen instructions.
 
 ## ARMING
 Down to the right on throttle otherwise servo 3 (throttle) wont do anything
-Compass must be calibrated with flight controller and not sperate. Disable internal
+Compass must be calibrated with flight controller and not sperate. Disable compass 2 (secondary interntal) due to interferance from electronics in the area.
 
-How to disable GPS?
+Go to safety to see arming checks and disable as required.
+
+How to disable GPS? --> need to test more 
 
 ARMING_RUDDER --> No disable option but can change it here
 
