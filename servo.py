@@ -24,7 +24,7 @@ WATER = False
 HABITAT = False
 
 # Connect to vehicle
-connectionString = 'com8'
+connectionString = "/dev/tty.usbserial-DN04T9FH"
 print "Connecting on: ",connectionString
 vehicle = connect(connectionString, wait_ready=["groundspeed","attitude","location.global_relative_frame"], baud=57600)
 
@@ -186,7 +186,6 @@ while(True):
     cv2.imshow("Aero HLG DAS - servo.py",color)
 
 # When everything done, release the capture
-cap.release()
 out.release()
 cv2.destroyAllWindows()
 
