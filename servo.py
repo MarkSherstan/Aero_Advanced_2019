@@ -183,7 +183,7 @@ while(True):
     altVisual(color, altitude)
 
     # Display the resulting frame
-    cv2.imshow("Aero HLG DAS - Servo.py",color)
+    cv2.imshow("Aero HLG DAS - servo.py",color)
 
 # When everything done, release the capture
 cap.release()
