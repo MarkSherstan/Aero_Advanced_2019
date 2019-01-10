@@ -77,13 +77,24 @@ def getFlightData():
 
     return (groundSpeed, roll, pitch, altitude)
 
+# Targetting calcs
+def targeting(groundSpeed, altitude, roll, pitch):
+    scale = 5
+
+    dropTime = math.sqrt((2.0*altitude)/9.81)
+    distance = int(dropTime * groundSpeed)
+    xCorrection = int((math.tan(roll)) * altitude * scale)                  # Positive y is up
+    yCorrection = int((distance - math.tan(pitch) * altitude) * scale)      # Positive x is right
+
+    return (dropTime, distance, xCorrection, yCorrection, scale)
+
 # Set all servos to closed
 vehicle.channels.overrides['6'] = 2000
 vehicle.channels.overrides['7'] = 2000
 vehicle.channels.overrides['8'] = 2000
 
 # Display message
-print("Starting")
+print("Open video feed")
 
 # Main Loop
 while(True):
@@ -95,17 +106,27 @@ while(True):
 
     # Get real time info from plane and process it
     (groundSpeed, roll, pitch, altitude) = getFlightData()
+    (dropTime, distance, xCorrection, yCorrection, scale) = targeting(groundSpeed, altitude, roll, pitch)
     altitude = int(altitude*3.28084)
 
     # Print data to screen
     cv2.putText(color,"Current Altitude (ft): %s"%altitude,(1000,40),font,fontScale1,fontColor,lineType)
     cv2.putText(color,"Ground speed (m/s): %s"%round(groundSpeed,2),(1000,60),font,fontScale1,fontColor,lineType)
-    cv2.putText(color,"Roll (deg): %s"%round(math.degrees(roll),2),(1000,80),font,fontScale1,fontColor,lineType)
-    cv2.putText(color,"Pitch (deg): %s"%round(math.degrees(pitch),2),(1000,100),font,fontScale1,fontColor,lineType)
+    cv2.putText(color,"X correction (m): %s"%round(xCorrection/scale,2),(1000,80),font,fontScale1,fontColor,lineType)
+    cv2.putText(color,"Y correction (m): %s"%round(yCorrection/scale,2),(1000,100),font,fontScale1,fontColor,lineType)
 
     now = datetime.datetime.now()
     timeStamp = now.strftime("%Y-%m-%d %H:%M:%S")
     cv2.putText(color,timeStamp,(1000,20),font,fontScale1,fontColor,lineType)
+
+    # Cross Hair
+    crossHairColor = (0,255,0)
+    cv2.line(color,(width/2+10+xCorrection,height/2+10-yCorrection),(width/2+30+xCorrection,height/2+30-yCorrection),crossHairColor,5)
+    cv2.line(color,(width/2-10+xCorrection,height/2+10-yCorrection),(width/2-30+xCorrection,height/2+30-yCorrection),crossHairColor,5)
+    cv2.line(color,(width/2+10+xCorrection,height/2-10-yCorrection),(width/2+30+xCorrection,height/2-30-yCorrection),crossHairColor,5)
+    cv2.line(color,(width/2-10+xCorrection,height/2-10-yCorrection),(width/2-30+xCorrection,height/2-30-yCorrection),crossHairColor,5)
+
+    cv2.circle(color, (width/2+xCorrection,height/2-yCorrection),5,crossHairColor,-1)
 
     # Keyboard Toggles
     key = cv2.waitKey(1)
@@ -188,7 +209,7 @@ while(True):
     altVisual(color, altitude)
 
     # Display the resulting frame
-    cv2.imshow("Aero HLG DAS - Servo_FPV.py",color)
+    cv2.imshow("Aero HLG DAS - servo_FPV.py",color)
 
 # When everything done, release the capture
 cap.release()
@@ -198,4 +219,4 @@ cv2.destroyAllWindows()
 # Close the vehicle connection
 vehicle.close()
 
-print("Closing")
+print("Closing video feed")
