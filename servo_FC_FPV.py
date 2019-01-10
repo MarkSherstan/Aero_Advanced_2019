@@ -24,7 +24,7 @@ WATER = False
 HABITAT = False
 
 # Connect to vehicle
-connectionString = 'com8'
+connectionString = "/dev/tty.usbserial-DN04T9FH"
 print "Connecting on: ",connectionString
 vehicle = connect(connectionString, wait_ready=["groundspeed","attitude","location.global_relative_frame"], baud=57600)
 
@@ -134,6 +134,9 @@ while(True):
 
     cv2.circle(color, (width/2+xCorrection,height/2-yCorrection),5,crossHairColor,-1)
 
+    # Display the linear altitude
+    altVisual(color, altitude)
+
     # Keyboard Toggles
     key = cv2.waitKey(1)
 
@@ -210,9 +213,6 @@ while(True):
         out.write(color)
     else:
         cv2.circle(color, (20,height-20),5,(255,255,255),-1)
-
-    # Display the linear altitude
-    altVisual(color, altitude)
 
     # Display the resulting frame
     cv2.imshow("Aero HLG DAS - servo_FC_FPV.py",color)
