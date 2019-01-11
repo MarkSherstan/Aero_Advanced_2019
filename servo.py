@@ -102,6 +102,9 @@ while(True):
     timeStamp = now.strftime("%Y-%m-%d %H:%M:%S")
     cv2.putText(color,timeStamp,(1000,20),font,fontScale1,fontColor,lineType)
 
+    # Display the linear altitude
+    altVisual(color, altitude)
+    
     # Keyboard Toggles
     key = cv2.waitKey(1)
 
@@ -178,9 +181,6 @@ while(True):
         out.write(color)
     else:
         cv2.circle(color, (20,height-20),5,(255,255,255),-1)
-
-    # Display the linear altitude
-    altVisual(color, altitude)
 
     # Display the resulting frame
     cv2.imshow("Aero HLG DAS - servo.py",color)
