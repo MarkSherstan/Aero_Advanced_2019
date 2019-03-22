@@ -76,11 +76,9 @@ def getFlightData():
     return (groundSpeed, roll, pitch, altitude)
 
 # Set all servos to closed
-vehicle.channels.overrides['1'] = 1000
-vehicle.channels.overrides['2'] = 2000
-vehicle.channels.overrides['3'] = 1000
-vehicle.channels.overrides['4'] = 2000
 vehicle.channels.overrides['6'] = 2000
+vehicle.channels.overrides['7'] = 2000
+vehicle.channels.overrides['8'] = 2000
 
 # Display message
 print("Starting")
@@ -118,7 +116,7 @@ while(True):
             cv2.putText(color,droppedCDA+" ft",(10,300),font,fontScale2,(255,255,255),lineType)
             cv2.imwrite('CDA_Release.png',color)
 
-            vehicle.channels.overrides['6'] = 1000
+            vehicle.channels.overrides['5'] = 1000
             vehicle.flush()
 
         elif key == ord('2'):
@@ -128,8 +126,7 @@ while(True):
             cv2.putText(color,droppedHabitat+" ft",(10,height-50),font,fontScale2,(255,255,255),lineType)
             cv2.imwrite('habitat_Release.png',color)
 
-            vehicle.channels.overrides['1'] = 2000
-            vehicle.channels.overrides['2'] = 1000
+            vehicle.channels.overrides['6'] = 1000
             vehicle.flush()
 
         elif key == ord('3'):
@@ -139,8 +136,7 @@ while(True):
             cv2.putText(color,droppedWater+" ft",(750,height-50),font,fontScale2,(255,255,255),lineType)
             cv2.imwrite('water_Release.png',color)
 
-            vehicle.channels.overrides['3'] = 2000
-            vehicle.channels.overrides['4'] = 1000
+            vehicle.channels.overrides['7'] = 1000
             vehicle.flush()
 
         elif key == ord('r'):
@@ -164,23 +160,19 @@ while(True):
     if HABITAT == True:
         cv2.putText(color,"Habitat",(10,height-200),font,fontScale2,(255,255,255),lineType)
         cv2.putText(color,droppedHabitat+" ft",(10,height-50),font,fontScale2,(255,255,255),lineType)
-        vehicle.channels.overrides['1'] = 2000
-        vehicle.channels.overrides['2'] = 1000
+        vehicle.channels.overrides['7'] = 1000
         vehicle.flush()
     else:
-        vehicle.channels.overrides['1'] = 1000
-        vehicle.channels.overrides['2'] = 2000
+        vehicle.channels.overrides['7'] = 2000
         vehicle.flush()
 
     if WATER == True:
         cv2.putText(color,"Water",(750,height-200),font,fontScale2,(255,255,255),lineType)
         cv2.putText(color,droppedWater+" ft",(750,height-50),font,fontScale2,(255,255,255),lineType)
-        vehicle.channels.overrides['3'] = 2000
-        vehicle.channels.overrides['4'] = 1000
+        vehicle.channels.overrides['8'] = 1000
         vehicle.flush()
     else:
-        vehicle.channels.overrides['3'] = 1000
-        vehicle.channels.overrides['4'] = 2000
+        vehicle.channels.overrides['8'] = 2000
         vehicle.flush()
 
     # Record footage and display red or white circle
