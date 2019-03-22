@@ -28,8 +28,10 @@ connectionString = "/dev/tty.usbserial-DN04T9FH"
 print "Connecting on: ",connectionString
 vehicle = connect(connectionString, wait_ready=["groundspeed","attitude","location.global_relative_frame"], baud=57600)
 
-# Set background, set time stamp, codec, and video recorder
-color = np.zeros((height,width,3), np.uint8)
+# Set USB capture device, set time stamp, codec, and video recorder
+cap = cv2.VideoCapture(0)
+cap.set(cv2.CAP_FFMPEG,True)
+cap.set(cv2.CAP_PROP_FPS,30)
 
 now = datetime.datetime.now()
 timeStamp = now.strftime("%Y-%m-%d_%H.%M.%S") + ".avi"
@@ -47,6 +49,17 @@ def getFlightData():
 
     return (groundSpeed, roll, pitch, altitude)
 
+# Targetting calcs
+def targeting(groundSpeed, altitude, roll, pitch):
+    scale = 5
+
+    dropTime = math.sqrt((2.0*altitude)/9.81)
+    distance = int(dropTime * groundSpeed)
+    xCorrection = int((math.tan(roll)) * altitude * scale)                  # Positive y is up
+    yCorrection = int((distance - math.tan(pitch) * altitude) * scale)      # Positive x is right
+
+    return (dropTime, distance, xCorrection, yCorrection, scale)
+
 # Set all servos to closed
 vehicle.channels.overrides['1'] = 1000
 vehicle.channels.overrides['2'] = 2000
@@ -55,26 +68,39 @@ vehicle.channels.overrides['4'] = 2000
 vehicle.channels.overrides['6'] = 2000
 
 # Display message
-print("Starting")
+print("Open video feed")
 
 # Main Loop
 while(True):
-    # Create a black background
-    color = np.zeros((height,width,3), np.uint8)
+    # Capture frame-by-frame, resize, and convert to grey then back to color so we can display color markers
+    ret, frame = cap.read()
+    frame = cv2.resize(frame, (width,height))
+    grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    color = cv2.cvtColor(grey, cv2.COLOR_GRAY2BGR)
 
     # Get real time info from plane and process it
     (groundSpeed, roll, pitch, altitude) = getFlightData()
+    (dropTime, distance, xCorrection, yCorrection, scale) = targeting(groundSpeed, altitude, roll, pitch)
     altitude = int(altitude*3.28084)
 
     # Print data to screen
     cv2.putText(color,"Current Altitude (ft): %s"%altitude,(1000,40),font,fontScale1,fontColor,lineType)
     cv2.putText(color,"Ground speed (m/s): %s"%round(groundSpeed,2),(1000,60),font,fontScale1,fontColor,lineType)
-    cv2.putText(color,"Roll (deg): %s"%round(math.degrees(roll),2),(1000,80),font,fontScale1,fontColor,lineType)
-    cv2.putText(color,"Pitch (deg): %s"%round(math.degrees(pitch),2),(1000,100),font,fontScale1,fontColor,lineType)
+    cv2.putText(color,"X correction (m): %s"%round(xCorrection/scale,2),(1000,80),font,fontScale1,fontColor,lineType)
+    cv2.putText(color,"Y correction (m): %s"%round(yCorrection/scale,2),(1000,100),font,fontScale1,fontColor,lineType)
 
     now = datetime.datetime.now()
     timeStamp = now.strftime("%Y-%m-%d %H:%M:%S")
     cv2.putText(color,timeStamp,(1000,20),font,fontScale1,fontColor,lineType)
+
+    # Cross Hair
+    crossHairColor = (0,255,0)
+    cv2.line(color,(width/2+10+xCorrection,height/2+10-yCorrection),(width/2+30+xCorrection,height/2+30-yCorrection),crossHairColor,5)
+    cv2.line(color,(width/2-10+xCorrection,height/2+10-yCorrection),(width/2-30+xCorrection,height/2+30-yCorrection),crossHairColor,5)
+    cv2.line(color,(width/2+10+xCorrection,height/2-10-yCorrection),(width/2+30+xCorrection,height/2-30-yCorrection),crossHairColor,5)
+    cv2.line(color,(width/2-10+xCorrection,height/2-10-yCorrection),(width/2-30+xCorrection,height/2-30-yCorrection),crossHairColor,5)
+
+    cv2.circle(color, (width/2+xCorrection,height/2-yCorrection),5,crossHairColor,-1)
 
     # Keyboard Toggles
     key = cv2.waitKey(1)
@@ -160,13 +186,14 @@ while(True):
         cv2.circle(color, (20,height-20),5,(255,255,255),-1)
 
     # Display the resulting frame
-    cv2.imshow("Aero HLG DAS - servo.py",color)
+    cv2.imshow("Aero HLG DAS - servo_FPV.py",color)
 
 # When everything done, release the capture
+cap.release()
 out.release()
 cv2.destroyAllWindows()
 
 # Close the vehicle connection
 vehicle.close()
 
-print("Closing")
+print("Closing video feed")
