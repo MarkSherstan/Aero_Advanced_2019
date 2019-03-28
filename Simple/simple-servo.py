@@ -26,7 +26,7 @@ HABITAT = False
 # Connect to vehicle
 connectionString = "/dev/tty.usbserial-DN04T9FH"
 print "Connecting on: ",connectionString
-vehicle = connect(connectionString, wait_ready=["groundspeed","attitude","location.global_relative_frame"], baud=57600)
+vehicle = connect(connectionString, wait_ready=["location.global_relative_frame"], baud=57600)
 
 # Set background, set time stamp, codec, and video recorder
 color = np.zeros((height,width,3), np.uint8)
@@ -36,16 +36,13 @@ timeStamp = now.strftime("%Y-%m-%d_%H.%M.%S") + ".avi"
 
 out = cv2.VideoWriter(timeStamp,cv2.VideoWriter_fourcc('M','J','P','G'), 15, (width,height))
 
-# Get telemetry data [ m/s, radians, radians, m ]
+# Get telemetry data
 def getFlightData():
-    groundSpeed = vehicle.groundspeed
-    roll = vehicle.attitude.roll
-    pitch = vehicle.attitude.pitch
     altitude = vehicle.location.global_relative_frame.alt
     if altitude < 0:    # Dont let the dropTime become imaginary
         altitude = 0
 
-    return (groundSpeed, roll, pitch, altitude)
+    return altitude
 
 # Set all servos to closed
 vehicle.channels.overrides['1'] = 1000
@@ -63,14 +60,11 @@ while(True):
     color = np.zeros((height,width,3), np.uint8)
 
     # Get real time info from plane and process it
-    (groundSpeed, roll, pitch, altitude) = getFlightData()
+    altitude = getFlightData()
     altitude = int(altitude*3.28084)
 
     # Print data to screen
     cv2.putText(color,"Current Altitude (ft): %s"%altitude,(1000,40),font,fontScale1,fontColor,lineType)
-    cv2.putText(color,"Ground speed (m/s): %s"%round(groundSpeed,2),(1000,60),font,fontScale1,fontColor,lineType)
-    cv2.putText(color,"Roll (deg): %s"%round(math.degrees(roll),2),(1000,80),font,fontScale1,fontColor,lineType)
-    cv2.putText(color,"Pitch (deg): %s"%round(math.degrees(pitch),2),(1000,100),font,fontScale1,fontColor,lineType)
 
     now = datetime.datetime.now()
     timeStamp = now.strftime("%Y-%m-%d %H:%M:%S")
