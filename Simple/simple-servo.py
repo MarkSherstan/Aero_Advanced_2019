@@ -64,11 +64,11 @@ while(True):
     altitude = int(altitude*3.28084)
 
     # Print data to screen
-    cv2.putText(color,"Current Altitude (ft): %s"%altitude,(1000,40),font,fontScale1,fontColor,lineType)
+    cv2.putText(color,"Current Altitude (ft): %s"%altitude,(1030,40),font,fontScale1,fontColor,lineType)
 
     now = datetime.datetime.now()
     timeStamp = now.strftime("%Y-%m-%d %H:%M:%S")
-    cv2.putText(color,timeStamp,(1000,20),font,fontScale1,fontColor,lineType)
+    cv2.putText(color,timeStamp,(1030,20),font,fontScale1,fontColor,lineType)
 
     # Keyboard Toggles
     key = cv2.waitKey(1)
