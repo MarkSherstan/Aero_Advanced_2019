@@ -58,6 +58,9 @@ print("Starting")
 while(True):
     # Create a black background
     color = np.zeros((height,width,3), np.uint8)
+    
+    # Small delay to help with Windows 10 buffer
+    time.sleep(0.1)
 
     # Get real time info from plane and process it
     altitude = getFlightData()
