@@ -77,6 +77,9 @@ while(True):
     frame = cv2.resize(frame, (width,height))
     grey = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     color = cv2.cvtColor(grey, cv2.COLOR_GRAY2BGR)
+    
+    # Small delay to help with Windows 10 buffer
+    time.sleep(0.1)
 
     # Get real time info from plane and process it
     (groundSpeed, roll, pitch, altitude) = getFlightData()
